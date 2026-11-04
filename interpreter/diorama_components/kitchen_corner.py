@@ -4,7 +4,8 @@
 
 import math
 
-from .common import box, faceted_blob, faceted_plane, material, seeded_random, srgb, wire
+from .appliance import build_kettle, build_toaster
+from .common import box, empty, faceted_plane, material, seeded_random, srgb, wire
 
 
 def build(params):
@@ -31,19 +32,14 @@ def build(params):
         return
     counter = material("kitchen | counter top", srgb("#2E3B3A"), 0.3, coat=0.4)
     cabinet = material("kitchen | cabinet", srgb("#D8E3DF"), 0.55)
-    steel = material("kitchen | toaster", srgb("#C9D3D2"), 0.25, metal=0.9)
     dark = material("kitchen | dark parts", srgb("#2A3231"), 0.5)
-    kettle_mat = material("kitchen | kettle", srgb("#1B8F77"), 0.3, coat=0.5)
     cord = material("kitchen | cord", srgb("#1A1D1D"), 0.4)
     box("set.cabinet", (1.4, 0.58, 0.86), (1.05, -0.30, 0.43), cabinet, 0.01)
     box("set.counter", (1.46, 0.62, 0.04), (1.05, -0.31, 0.88), counter, 0.006)
     for i in range(2):
         box(f"set.cabinet.line.{i}", (0.005, 0.005, 0.7), (0.7 + i * 0.7, -0.592, 0.45), dark)
-    box("set.toaster", (0.28, 0.17, 0.19), (0.52, -0.30, 0.995), steel, 0.035, segments=3)
-    for k in (-0.05, 0.05):
-        box(f"set.toaster.slot.{k}", (0.2, 0.025, 0.01), (0.52, -0.30 + k, 1.088), dark, 0.004)
-    box("set.toaster.lever", (0.03, 0.04, 0.02), (0.67, -0.30, 1.02), dark, 0.006)
-    faceted_blob("set.kettle", 0.1, (0.86, -0.28, 1.0), kettle_mat, rng, 2, 0.03, (1, 1, 1.15))
-    box("set.kettle.lid", (0.07, 0.07, 0.03), (0.86, -0.28, 1.115), dark, 0.01)
-    wire("set.kettle.handle", [(0.93, -0.28, 0.98), (0.99, -0.28, 1.05), (0.92, -0.28, 1.11)], dark, 0.012)
+    if not params["appliances"]:
+        return
+    build_toaster("set.toaster", empty("set.toaster", location=(0.52, -0.30, 0.9)))
+    build_kettle("set.kettle", empty("set.kettle", location=(0.86, -0.28, 0.9)))
     wire("set.toaster.cord", [(0.66, -0.25, 0.93), (0.7, -0.12, 0.905), (0.72, -0.02, 1.05), (0.72, -0.01, 1.10)], cord, 0.004)

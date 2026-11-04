@@ -94,7 +94,7 @@ class ElectricalPanel:
             pivots.append(pivot)
         for dz in (0.04, -0.04):
             box(f"{name}.screw.{dz}", (0.006, 0.004, 0.006), (x, front_y - 0.001, z + dz), m["screw"], 0.001, r)
-        self.groups[group].append({"levers": pivots, "label": label_mat if lit else None})
+        self.groups[group].append({"levers": pivots, "label": label_mat if lit else None, "x": x, "w": w, "z": z})
 
     def _modules(self, params):
         left = -PW / 2 + 0.05
@@ -118,21 +118,23 @@ class ElectricalPanel:
             self._breaker(f"{self.id}.circuit.{i}", cx, ROWS[1], 1, self.mats["module"], "circuits")
 
     def _wiring(self, circuits):
-        for i in range(circuits + 2):
-            tx = -PW / 2 + 0.05 + MODULE * (i % max(circuits, 1) + 0.5) * 1.15
-            row = ROWS[1] if i >= 2 else ROWS[0]
-            wire(
-                f"{self.id}.wire.{i}",
-                [
-                    (-0.09 + 0.008 * (i % 4), PD / 2 - 0.03, PH / 2 + 0.05),
-                    (-0.09 + 0.01 * i, PD / 2 - 0.035, PH / 2 - 0.05),
-                    (tx, PD / 2 - 0.03 - 0.004 * (i % 3), row + 0.075),
-                    (tx, PD / 2 - 0.02 - DEPTH / 2, row + 0.045),
-                ],
-                self.wires[i % 4],
-                0.0042,
-                self.root,
-            )
+        """Two feeds (phase, neutral) into the main breaker, one phase wire per
+        circuit breaker, plus earth and neutral bars, so current can be shown
+        flowing through the exact wires of a circuit."""
+        self.wire_paths = {"main": []}
+        main_x = self.groups["main"][0]["x"]
+        runs = [("main", main_x - 0.008, ROWS[0], 0), ("main", main_x + 0.008, ROWS[0], 2)]
+        for i, item in enumerate(self.groups["circuits"]):
+            runs.append((i + 1, item["x"], ROWS[1], i % 2))
+        for i, (key, tx, row, color) in enumerate(runs):
+            points = [
+                (-0.09 + 0.008 * (i % 4), PD / 2 - 0.03, PH / 2 + 0.05),
+                (-0.09 + 0.01 * i, PD / 2 - 0.035, PH / 2 - 0.05),
+                (tx, PD / 2 - 0.03 - 0.004 * (i % 3), row + 0.075),
+                (tx, PD / 2 - 0.02 - DEPTH / 2, row + 0.045),
+            ]
+            wire(f"{self.id}.wire.{i}", points, self.wires[color], 0.0042, self.root)
+            self.wire_paths.setdefault(key, []).append(points)
 
     def _door(self):
         m = self.mats
@@ -171,6 +173,80 @@ class ElectricalPanel:
                         socket.default_value = value
                         socket.keyframe_insert("default_value", frame=f + 1)
                 frame += event["staggerFrames"]
+
+    def flow(self, event, fps):
+        """Pulses of light run along the circuit's wires: each pulse is a thick
+        emissive copy of the wire whose bevel factors slide from 0 to 1."""
+        start, end = event["frame"], event["endFrame"]
+        period = max(4, round(fps / event["pulsesPerSecond"]))
+        length = 0.3
+        current = material(f"{self.id} | current {start}", srgb("#FFE58A"), 0.3, emission=srgb("#FFE58A"), strength=6.0)
+        for n, points in enumerate(self.wire_paths[event["circuit"]]):
+            pulse = wire(f"{self.id}.flow.{event['circuit']}.{start}.{n}", points, current, 0.011, self.root)
+            data = pulse.data
+            data.bevel_factor_mapping_start = "SPLINE"
+            data.bevel_factor_mapping_end = "SPLINE"
+            pulse.hide_render = True
+            pulse.keyframe_insert("hide_render", frame=1)
+            pulse.keyframe_insert("hide_render", frame=end + 2)
+            pulse.hide_render = False
+            pulse.keyframe_insert("hide_render", frame=start + 1)
+            for f in range(start, end + 1, 2):
+                phase = ((f - start) % period) / period
+                head = phase * (1 + length)
+                data.bevel_factor_start = max(0.0, min(1.0, head - length))
+                data.bevel_factor_end = max(0.0, min(1.0, head))
+                data.keyframe_insert("bevel_factor_start", frame=f + 1)
+                data.keyframe_insert("bevel_factor_end", frame=f + 1)
+            for fcurve in getattr(data.animation_data.action, "fcurves", []):
+                for point in fcurve.keyframe_points:
+                    point.interpolation = "LINEAR"
+            for fcurve in getattr(pulse.animation_data.action, "fcurves", []):
+                for point in fcurve.keyframe_points:
+                    point.interpolation = "CONSTANT"
+
+    def trip(self, event):
+        item = self.groups["circuits"][event["circuit"] - 1]
+        frame = event["frame"]
+        for pivot in item["levers"]:
+            key(pivot, "rotation_euler", frame, (SETTLE, 0, 0))
+            key(pivot, "rotation_euler", frame + 2, (OFF - math.radians(6), 0, 0))
+            key(pivot, "rotation_euler", frame + 5, (OFF, 0, 0))
+        label = item["label"]
+        if label is not None:
+            principled = label.node_tree.nodes["Principled BSDF"]
+            color, strength = principled.inputs["Emission Color"], principled.inputs["Emission Strength"]
+            color.keyframe_insert("default_value", frame=frame + 1)
+            color.default_value = (*srgb("#FF6B3D"), 1)
+            color.keyframe_insert("default_value", frame=frame + 2)
+            for f, value in ((frame, 2.5), (frame + 2, 8.0), (frame + 12, 4.0)):
+                strength.default_value = value
+                strength.keyframe_insert("default_value", frame=f + 1)
+
+    def highlight(self, event):
+        if event["controls"] == "circuit":
+            items = [self.groups["circuits"][event["circuit"] - 1]]
+        else:
+            items = self.groups[event["controls"]]
+        left = min(i["x"] - i["w"] / 2 for i in items) - 0.008
+        right = max(i["x"] + i["w"] / 2 for i in items) + 0.008
+        z = items[0]["z"]
+        glow = material(
+            f"{self.id} | highlight {event['frame']}", srgb("#0D2A22"), 0.3, emission=self.brand, strength=0.0
+        )
+        y = PD / 2 - 0.02 - DEPTH - 0.012
+        cx, width, height = (left + right) / 2, right - left, 0.11
+        for name, size, offset in (
+            ("top", (width, 0.004, 0.004), (0, 0, height / 2)),
+            ("bottom", (width, 0.004, 0.004), (0, 0, -height / 2)),
+            ("left", (0.004, 0.004, height), (-width / 2, 0, 0)),
+            ("right", (0.004, 0.004, height), (width / 2, 0, 0)),
+        ):
+            box(f"{self.id}.highlight.{event['frame']}.{name}", size, (cx + offset[0], y, z + offset[2]), glow, 0.0, self.root)
+        socket = glow.node_tree.nodes["Principled BSDF"].inputs["Emission Strength"]
+        for f, value in ((0, 0.0), (event["frame"], 0.0), (event["frame"] + 6, 7.0), (event["endFrame"] - 6, 4.0), (event["endFrame"], 0.0)):
+            socket.default_value = value
+            socket.keyframe_insert("default_value", frame=f + 1)
 
     def anchor(self, name):
         return self.anchors[name]

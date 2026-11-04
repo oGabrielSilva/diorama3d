@@ -29,9 +29,15 @@ from mathutils import Vector
 sys.dont_write_bytecode = True
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from diorama_components import electrical_panel, faceted_character, kitchen_corner, look  # noqa: E402
+from diorama_components import (  # noqa: E402
+    appliance,
+    electrical_panel,
+    faceted_character,
+    kitchen_corner,
+    look,
+)
 
-INTERPRETER_VERSION = "0.1.0"
+INTERPRETER_VERSION = "0.2.0"
 SUPPORTED_BLENDER = (5, 2)
 FORMATS = {"vertical": (1080, 1920), "horizontal": (1920, 1080)}
 
@@ -105,6 +111,8 @@ class Shot:
                 electrical_panel.initial_levers_rest(panel)
                 self.entities[entity["id"]] = panel
                 focus_point = tuple(entity["position"])
+            elif entity["component"] == "appliance@1":
+                self.entities[entity["id"]] = appliance.Appliance(entity, spec["look"]["brand"])
             elif entity["component"] == "faceted-character@1":
                 self.entities[entity["id"]] = faceted_character.FacetedCharacter(entity)
             else:
@@ -117,6 +125,14 @@ class Shot:
                 self.entities[event["target"]].open_door(event)
             elif event["action"] == "switch-on":
                 self.entities[event["target"]].switch_on(event)
+            elif event["action"] == "trip":
+                self.entities[event["target"]].trip(event)
+            elif event["action"] == "flow":
+                self.entities[event["target"]].flow(event, spec["fps"])
+            elif event["action"] == "highlight":
+                self.entities[event["target"]].highlight(event)
+            elif event["action"] == "power":
+                self.entities[event["target"]].power(event)
         # 2) body motion; hand targets are evaluated on the already-animated world
         for _, event in events:
             actor = self.entities.get(event.get("actor"))
