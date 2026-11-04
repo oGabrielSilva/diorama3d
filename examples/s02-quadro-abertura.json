@@ -1,0 +1,205 @@
+{
+  "schema": "qvid.diorama.shot/0",
+  "id": "s02-quadro-abertura",
+  "format": "vertical",
+  "fps": 30,
+  "durationFrames": 210,
+  "look": { "preset": "interior-window", "exposure": -0.55 },
+  "set": { "component": "kitchen-corner@1", "params": { "counter": true } },
+  "entities": [
+    {
+      "id": "quadro",
+      "component": "electrical-panel@1",
+      "position": [0, -0.05, 1.42],
+      "params": { "circuits": 6, "residualCurrentDevice": true, "surgeProtector": true }
+    },
+    {
+      "id": "teo",
+      "component": "faceted-character@1",
+      "position": [-0.4, -0.34, 0],
+      "yawDegrees": 56
+    }
+  ],
+  "events": [
+    { "action": "open-door", "target": "quadro", "frame": 40, "endFrame": 85, "angleDegrees": 100 },
+    { "action": "hand", "actor": "teo", "hand": "left", "frame": 17, "target": "rest" },
+    {
+      "action": "hand",
+      "actor": "teo",
+      "hand": "left",
+      "frame": 35,
+      "target": { "entity": "quadro", "anchor": "door-handle" }
+    },
+    {
+      "action": "hand",
+      "actor": "teo",
+      "hand": "left",
+      "frame": 40,
+      "target": { "entity": "quadro", "anchor": "door-handle" }
+    },
+    {
+      "action": "hand",
+      "actor": "teo",
+      "hand": "left",
+      "frame": 52,
+      "target": { "entity": "quadro", "anchor": "door-handle" }
+    },
+    {
+      "action": "hand",
+      "actor": "teo",
+      "hand": "left",
+      "frame": 62,
+      "target": { "entity": "quadro", "anchor": "door-handle" }
+    },
+    {
+      "action": "hand",
+      "actor": "teo",
+      "hand": "left",
+      "frame": 74,
+      "target": { "entity": "quadro", "anchor": "door-handle" }
+    },
+    {
+      "action": "hand",
+      "actor": "teo",
+      "hand": "left",
+      "frame": 90,
+      "target": { "entity": "quadro", "anchor": "inside" }
+    },
+    {
+      "action": "hand",
+      "actor": "teo",
+      "hand": "left",
+      "frame": 105,
+      "target": { "entity": "quadro", "anchor": "main-lever" }
+    },
+    {
+      "action": "hand",
+      "actor": "teo",
+      "hand": "left",
+      "frame": 114,
+      "target": { "entity": "quadro", "anchor": "main-lever" }
+    },
+    { "action": "hand", "actor": "teo", "hand": "left", "frame": 150, "target": "rest" },
+    { "action": "switch-on", "target": "quadro", "frame": 111, "controls": "main" },
+    {
+      "action": "switch-on",
+      "target": "quadro",
+      "frame": 121,
+      "controls": "protections",
+      "staggerFrames": 5
+    },
+    {
+      "action": "switch-on",
+      "target": "quadro",
+      "frame": 131,
+      "controls": "circuits",
+      "staggerFrames": 5
+    },
+    { "action": "lean", "actor": "teo", "frame": 89, "degrees": 0 },
+    { "action": "lean", "actor": "teo", "frame": 107, "degrees": 8 },
+    { "action": "lean", "actor": "teo", "frame": 129, "degrees": 3 },
+    { "action": "lean", "actor": "teo", "frame": 159, "degrees": 0 },
+    {
+      "action": "look",
+      "actor": "teo",
+      "frame": 0,
+      "target": { "entity": "quadro", "anchor": "center" }
+    },
+    {
+      "action": "look",
+      "actor": "teo",
+      "frame": 33,
+      "target": { "entity": "quadro", "anchor": "door-handle" }
+    },
+    {
+      "action": "look",
+      "actor": "teo",
+      "frame": 61,
+      "target": { "entity": "quadro", "anchor": "door-handle" }
+    },
+    {
+      "action": "look",
+      "actor": "teo",
+      "frame": 83,
+      "target": { "entity": "quadro", "anchor": "inside" }
+    },
+    {
+      "action": "look",
+      "actor": "teo",
+      "frame": 99,
+      "target": { "entity": "quadro", "anchor": "main-lever" }
+    },
+    {
+      "action": "look",
+      "actor": "teo",
+      "frame": 119,
+      "target": { "entity": "quadro", "anchor": "main-lever" }
+    },
+    {
+      "action": "look",
+      "actor": "teo",
+      "frame": 131,
+      "target": { "entity": "quadro", "anchor": "lower-row" }
+    },
+    {
+      "action": "look",
+      "actor": "teo",
+      "frame": 157,
+      "target": { "entity": "quadro", "anchor": "lower-row" }
+    },
+    { "action": "look", "actor": "teo", "frame": 175, "target": "camera" },
+    { "action": "look", "actor": "teo", "frame": 209, "target": "camera" },
+    { "action": "blink", "actor": "teo", "frame": 139 },
+    { "action": "brows", "actor": "teo", "frame": 165, "raise": 0 },
+    { "action": "brows", "actor": "teo", "frame": 171, "raise": 1 },
+    { "action": "brows", "actor": "teo", "frame": 195, "raise": 1 },
+    { "action": "brows", "actor": "teo", "frame": 203, "raise": 0 }
+  ],
+  "camera": {
+    "apertureFStop": 2.8,
+    "keys": [
+      {
+        "frame": 0,
+        "position": [0.22, -2.55, 1.05],
+        "target": [-0.04, 0, 0.98],
+        "lens": 30,
+        "focus": [-0.3, -0.25, 1.2]
+      },
+      {
+        "frame": 59,
+        "position": [0.12, -2.15, 1.12],
+        "target": [-0.06, 0, 1.1],
+        "lens": 31,
+        "focus": [-0.2, -0.15, 1.3]
+      },
+      {
+        "frame": 104,
+        "position": [0.3, -1.55, 1.36],
+        "target": [-0.02, 0, 1.36],
+        "lens": 32,
+        "focus": { "entity": "quadro", "anchor": "main-lever" }
+      },
+      {
+        "frame": 149,
+        "position": [0.14, -1.02, 1.42],
+        "target": [0, 0, 1.4],
+        "lens": 34,
+        "focus": { "entity": "quadro", "anchor": "lower-row" }
+      },
+      {
+        "frame": 171,
+        "position": [0.12, -1.08, 1.42],
+        "target": [-0.03, 0, 1.38],
+        "lens": 34,
+        "focus": { "entity": "quadro", "anchor": "lower-row" }
+      },
+      {
+        "frame": 209,
+        "position": [0.02, -1.95, 1.36],
+        "target": [-0.24, 0, 1.3],
+        "lens": 33,
+        "focus": { "entity": "teo", "anchor": "head" }
+      }
+    ]
+  }
+}
