@@ -25,6 +25,8 @@ import time
 import bpy
 from mathutils import Vector
 
+# Never write __pycache__ next to the shipped source (read-only when installed).
+sys.dont_write_bytecode = True
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from diorama_components import electrical_panel, faceted_character, kitchen_corner, look  # noqa: E402
