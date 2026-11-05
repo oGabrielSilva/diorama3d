@@ -1,0 +1,143 @@
+{
+  "schema": "qvid.diorama.shot/0",
+  "id": "s02-disjuntor-por-dentro",
+  "format": "vertical",
+  "fps": 30,
+  "durationFrames": 240,
+  "look": {
+    "preset": "interior-window",
+    "exposure": -0.45
+  },
+  "set": {
+    "component": "kitchen-corner@1",
+    "params": {
+      "counter": false,
+      "appliances": false
+    }
+  },
+  "entities": [
+    {
+      "id": "disjuntor",
+      "component": "circuit-breaker@1",
+      "position": [0, -0.185, 1.45],
+      "params": {
+        "rating": "C20",
+        "state": "on"
+      }
+    }
+  ],
+  "events": [
+    {
+      "action": "flow",
+      "target": "disjuntor",
+      "frame": 6,
+      "endFrame": 52,
+      "pulsesPerSecond": 2
+    },
+    {
+      "action": "flow",
+      "target": "disjuntor",
+      "frame": 53,
+      "endFrame": 140,
+      "pulsesPerSecond": 4,
+      "load": "overload"
+    },
+    {
+      "action": "section",
+      "target": "disjuntor",
+      "frame": 66,
+      "endFrame": 100,
+      "axis": "x",
+      "side": "negative"
+    },
+    {
+      "action": "trip",
+      "target": "disjuntor",
+      "frame": 140,
+      "cause": "overload"
+    },
+    {
+      "action": "explode",
+      "target": "disjuntor",
+      "frame": 172,
+      "endFrame": 222,
+      "distance": 1,
+      "staggerFrames": 3
+    }
+  ],
+  "camera": {
+    "apertureFStop": 5.6,
+    "keys": [
+      {
+        "frame": 0,
+        "position": [-0.55, -1.05, 1.5],
+        "target": [0, -0.17, 1.45],
+        "lens": 40,
+        "focus": {
+          "entity": "disjuntor",
+          "anchor": "center"
+        }
+      },
+      {
+        "frame": 52,
+        "position": [-0.9, -0.66, 1.49],
+        "target": [0, -0.22, 1.45],
+        "lens": 38,
+        "focus": {
+          "entity": "disjuntor",
+          "anchor": "center"
+        }
+      },
+      {
+        "frame": 100,
+        "position": [-0.95, -0.2, 1.47],
+        "target": [0, -0.19, 1.46],
+        "lens": 42,
+        "focus": {
+          "entity": "disjuntor",
+          "anchor": "bimetal"
+        }
+      },
+      {
+        "frame": 128,
+        "position": [-0.62, -0.18, 1.45],
+        "target": [0, -0.18, 1.44],
+        "lens": 45,
+        "focus": {
+          "entity": "disjuntor",
+          "anchor": "contacts"
+        }
+      },
+      {
+        "frame": 166,
+        "position": [-0.6, -0.17, 1.44],
+        "target": [0, -0.17, 1.43],
+        "lens": 45,
+        "focus": {
+          "entity": "disjuntor",
+          "anchor": "arc-chute"
+        }
+      },
+      {
+        "frame": 214,
+        "position": [-1.3, -0.3, 1.56],
+        "target": [-0.06, -0.165, 1.45],
+        "lens": 34,
+        "focus": {
+          "entity": "disjuntor",
+          "anchor": "center"
+        }
+      },
+      {
+        "frame": 239,
+        "position": [-1.24, -0.36, 1.58],
+        "target": [-0.06, -0.165, 1.45],
+        "lens": 34,
+        "focus": {
+          "entity": "disjuntor",
+          "anchor": "center"
+        }
+      }
+    ]
+  }
+}

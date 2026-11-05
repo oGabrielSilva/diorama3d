@@ -8,11 +8,14 @@ from .appliance import build_kettle, build_toaster
 from .common import box, empty, faceted_plane, material, seeded_random, srgb, wire
 
 
-def build(params):
+def build(params, surfaces=None):
+    """`surfaces` maps wall/floor/backsplash/counter to library materials that
+    replace the procedural colors of those surfaces."""
+    surfaces = surfaces or {}
     rng = seeded_random("kitchen-corner@1")
-    wall = material("wall | painted plaster", srgb(params["wall"]), 0.85)
-    tile = material("wall | backsplash tile", srgb("#5E8C86"), 0.35, coat=0.3)
-    floor = material("floor | wood", srgb(params["floor"]), 0.7)
+    wall = surfaces.get("wall") or material("wall | painted plaster", srgb(params["wall"]), 0.85)
+    tile = surfaces.get("backsplash") or material("wall | backsplash tile", srgb("#5E8C86"), 0.35, coat=0.3)
+    floor = surfaces.get("floor") or material("floor | wood", srgb(params["floor"]), 0.7)
     trim = material("wall | baseboard", srgb("#E7F0EC"), 0.5)
     plastic = material("wall | switch plate", srgb("#E9EEEC"), 0.38)
 
@@ -30,7 +33,7 @@ def build(params):
 
     if not params["counter"]:
         return
-    counter = material("kitchen | counter top", srgb("#2E3B3A"), 0.3, coat=0.4)
+    counter = surfaces.get("counter") or material("kitchen | counter top", srgb("#2E3B3A"), 0.3, coat=0.4)
     cabinet = material("kitchen | cabinet", srgb("#D8E3DF"), 0.55)
     dark = material("kitchen | dark parts", srgb("#2A3231"), 0.5)
     cord = material("kitchen | cord", srgb("#1A1D1D"), 0.4)
