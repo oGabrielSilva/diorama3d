@@ -1,0 +1,26 @@
+{
+  "schema": "diorama.shot/1",
+  "id": "minimal",
+  "durationFrames": 2.5,
+  "set": {
+    "component": "kitchen-corner@1"
+  },
+  "camera": {
+    "keys": [
+      {
+        "frame": 0,
+        "position": [
+          -0.55,
+          -1.05,
+          1.5
+        ],
+        "target": [
+          0,
+          -0.17,
+          1.45
+        ],
+        "lens": 40
+      }
+    ]
+  }
+}

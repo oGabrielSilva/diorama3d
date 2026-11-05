@@ -1,0 +1,45 @@
+{
+  "schema": "diorama.shot/1",
+  "id": "minimal",
+  "format": "vertical",
+  "fps": 30,
+  "durationFrames": 30,
+  "look": {
+    "preset": "interior-window",
+    "exposure": -0.55,
+    "brand": {
+      "primary": "#00DC82",
+      "accent": "#5EEAD4"
+    }
+  },
+  "set": {
+    "component": "kitchen-corner@1",
+    "params": {
+      "wall": "#56666B",
+      "floor": "#7A5B45",
+      "counter": true,
+      "appliances": true
+    }
+  },
+  "entities": [],
+  "events": [],
+  "camera": {
+    "apertureFStop": 2.8,
+    "keys": [
+      {
+        "frame": 0,
+        "position": [
+          -0.55,
+          -1.05,
+          1.5
+        ],
+        "target": [
+          0,
+          -0.17,
+          1.45
+        ],
+        "lens": 40
+      }
+    ]
+  }
+}

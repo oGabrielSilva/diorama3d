@@ -1,6 +1,6 @@
 {
-  "schema": "qvid.diorama.shot/0",
-  "id": "s02-quadro-abertura",
+  "schema": "diorama.shot/1",
+  "id": "electrical-panel-opening",
   "format": "vertical",
   "fps": 30,
   "durationFrames": 240,
@@ -17,9 +17,13 @@
   },
   "entities": [
     {
-      "id": "quadro",
+      "id": "panel",
       "component": "electrical-panel@1",
-      "position": [0, -0.05, 1.42],
+      "position": [
+        0,
+        -0.05,
+        1.42
+      ],
       "params": {
         "circuits": 6,
         "residualCurrentDevice": true,
@@ -29,7 +33,11 @@
     {
       "id": "torradeira",
       "component": "appliance@1",
-      "position": [0.46, -0.3, 0.9],
+      "position": [
+        0.46,
+        -0.3,
+        0.9
+      ],
       "params": {
         "kind": "toaster"
       }
@@ -37,7 +45,11 @@
     {
       "id": "chaleira",
       "component": "appliance@1",
-      "position": [0.74, -0.28, 0.9],
+      "position": [
+        0.74,
+        -0.28,
+        0.9
+      ],
       "params": {
         "kind": "kettle"
       }
@@ -46,34 +58,34 @@
   "events": [
     {
       "action": "open-door",
-      "target": "quadro",
+      "target": "panel",
       "frame": 28,
       "endFrame": 74,
       "angleDegrees": 100
     },
     {
       "action": "switch-on",
-      "target": "quadro",
+      "target": "panel",
       "frame": 100,
       "controls": "main"
     },
     {
       "action": "switch-on",
-      "target": "quadro",
+      "target": "panel",
       "frame": 112,
       "controls": "protections",
       "staggerFrames": 5
     },
     {
       "action": "switch-on",
-      "target": "quadro",
+      "target": "panel",
       "frame": 124,
       "controls": "circuits",
       "staggerFrames": 5
     },
     {
       "action": "highlight",
-      "target": "quadro",
+      "target": "panel",
       "frame": 150,
       "endFrame": 180,
       "controls": "circuit",
@@ -87,7 +99,7 @@
     },
     {
       "action": "flow",
-      "target": "quadro",
+      "target": "panel",
       "frame": 172,
       "endFrame": 211,
       "circuit": 3,
@@ -101,7 +113,7 @@
     },
     {
       "action": "flow",
-      "target": "quadro",
+      "target": "panel",
       "frame": 192,
       "endFrame": 211,
       "circuit": 3,
@@ -109,7 +121,7 @@
     },
     {
       "action": "trip",
-      "target": "quadro",
+      "target": "panel",
       "frame": 212,
       "circuit": 3
     },
@@ -127,11 +139,17 @@
     },
     {
       "action": "highlight",
-      "target": "quadro",
+      "target": "panel",
       "frame": 216,
       "endFrame": 239,
       "controls": "circuit",
       "circuit": 3
+    },
+    {
+      "action": "explode",
+      "target": "panel",
+      "frame": 1,
+      "endFrame": 10
     }
   ],
   "camera": {
@@ -139,81 +157,145 @@
     "keys": [
       {
         "frame": 0,
-        "position": [0.3, -1.85, 1.18],
-        "target": [0.14, 0, 1.15],
+        "position": [
+          0.3,
+          -1.85,
+          1.18
+        ],
+        "target": [
+          0.14,
+          0,
+          1.15
+        ],
         "lens": 32,
         "focus": {
-          "entity": "quadro",
+          "entity": "panel",
           "anchor": "center"
         }
       },
       {
         "frame": 30,
-        "position": [0.24, -1.7, 1.28],
-        "target": [0.08, 0, 1.28],
+        "position": [
+          0.24,
+          -1.7,
+          1.28
+        ],
+        "target": [
+          0.08,
+          0,
+          1.28
+        ],
         "lens": 32,
         "focus": {
-          "entity": "quadro",
+          "entity": "panel",
           "anchor": "center"
         }
       },
       {
         "frame": 78,
-        "position": [0.14, -1.55, 1.42],
-        "target": [-0.02, 0, 1.4],
+        "position": [
+          0.14,
+          -1.55,
+          1.42
+        ],
+        "target": [
+          -0.02,
+          0,
+          1.4
+        ],
         "lens": 32,
         "focus": {
-          "entity": "quadro",
+          "entity": "panel",
           "anchor": "inside"
         }
       },
       {
         "frame": 102,
-        "position": [0.02, -1.12, 1.52],
-        "target": [-0.09, 0, 1.5],
+        "position": [
+          0.02,
+          -1.12,
+          1.52
+        ],
+        "target": [
+          -0.09,
+          0,
+          1.5
+        ],
         "lens": 35,
         "focus": {
-          "entity": "quadro",
+          "entity": "panel",
           "anchor": "main-lever"
         }
       },
       {
         "frame": 142,
-        "position": [0.08, -1, 1.36],
-        "target": [-0.01, 0, 1.34],
+        "position": [
+          0.08,
+          -1,
+          1.36
+        ],
+        "target": [
+          -0.01,
+          0,
+          1.34
+        ],
         "lens": 35,
         "focus": {
-          "entity": "quadro",
+          "entity": "panel",
           "anchor": "lower-row"
         }
       },
       {
         "frame": 170,
-        "position": [0.32, -2.3, 1.22],
-        "target": [0.32, 0, 1.13],
+        "position": [
+          0.32,
+          -2.3,
+          1.22
+        ],
+        "target": [
+          0.32,
+          0,
+          1.13
+        ],
         "lens": 28,
         "focus": {
-          "entity": "quadro",
+          "entity": "panel",
           "anchor": "center"
         }
       },
       {
         "frame": 214,
-        "position": [0.34, -2.24, 1.22],
-        "target": [0.32, 0, 1.13],
+        "position": [
+          0.34,
+          -2.24,
+          1.22
+        ],
+        "target": [
+          0.32,
+          0,
+          1.13
+        ],
         "lens": 28,
         "focus": {
-          "entity": "quadro",
+          "entity": "panel",
           "anchor": "center"
         }
       },
       {
         "frame": 239,
-        "position": [0.1, -1.18, 1.34],
-        "target": [0, 0, 1.33],
+        "position": [
+          0.1,
+          -1.18,
+          1.34
+        ],
+        "target": [
+          0,
+          0,
+          1.33
+        ],
         "lens": 34,
         "focus": {
-          "entity": "quadro",
+          "entity": "panel",
           "anchor": "lower-row"
         }
       }

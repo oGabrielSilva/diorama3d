@@ -1,0 +1,24 @@
+version = 1
+
+[[annotations]]
+path = ["diorama3d/**", "run.py", "tests/**"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Gabriel Silva and contributors"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = [
+  "spec/**",
+  "examples/**",
+  "docs/**",
+  "diorama3d/core/shot.schema.json",
+  "*.md",
+  ".github/**",
+  "pyproject.toml",
+  "REUSE.toml",
+  ".gitignore",
+  ".gitattributes",
+]
+precedence = "override"
+SPDX-FileCopyrightText = "2026 Gabriel Silva and contributors"
+SPDX-License-Identifier = "Apache-2.0"

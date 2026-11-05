@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Diorama library assets: asset@1 (models appended from .blend or imported from
 # .glb), PBR texture-set materials and HDRI worlds. Paths come from the
-# resolved-assets file written by QVid after re-hashing every library file; the
+# resolved-assets file written by the caller after hashing every library file; the
 # shot specification itself only carries asset ids and SHA-256 hashes.
 # Loading a .blend never runs its scripts: Blender starts with
 # --factory-startup, so auto-run of Python (scripts, drivers) stays disabled.

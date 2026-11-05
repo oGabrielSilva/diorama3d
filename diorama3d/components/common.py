@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Diorama interpreter for QVid Studio — shared modeling helpers.
+# Diorama — shared modeling helpers.
 # This component runs inside Blender and is distributed under the GNU GPL v3
 # or later (see ../LICENSE). It only reads declarative shot specifications.
 

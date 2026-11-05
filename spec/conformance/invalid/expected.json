@@ -1,0 +1,13 @@
+{
+  "unsupported-schema": "dioramaUnsupportedSpec",
+  "unknown-top-level-property": "dioramaInvalidSpec",
+  "code-in-params": "dioramaInvalidSpec",
+  "unknown-component": "dioramaInvalidSpec",
+  "frame-not-integer": "dioramaInvalidSpec",
+  "duplicate-entity": "dioramaDuplicateEntity",
+  "event-after-last-frame": "dioramaFrameOutOfRange",
+  "explode-on-panel": "dioramaTargetMustBeBreaker",
+  "panel-flow-without-circuit": "dioramaEventParamRequired",
+  "camera-keys-out-of-order": "dioramaCameraKeysOrder",
+  "unknown-anchor": "dioramaUnknownAnchor"
+}

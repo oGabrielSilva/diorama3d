@@ -1,0 +1,22 @@
+schema_version = "1.0.0"
+
+id = "diorama3d"
+version = "0.1.0"
+name = "Diorama"
+tagline = "Declarative, deterministic explainer shots from JSON"
+maintainer = "Gabriel Silva"
+type = "add-on"
+website = "https://github.com/oGabrielSilva/diorama3d"
+tags = ["Render", "Animation", "Pipeline"]
+
+blender_version_min = "5.2.0"
+blender_version_max = "5.3.0"
+
+license = ["SPDX:GPL-3.0-or-later"]
+copyright = ["2026 Gabriel Silva"]
+
+[permissions]
+files = "Read shot specifications and assets and write rendered frames"
+
+[build]
+paths_exclude_pattern = ["__pycache__/", "/.git/", "/*.zip"]

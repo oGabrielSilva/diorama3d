@@ -1,60 +1,71 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Diorama interpreter for QVid Studio.
-#
 # Copyright (C) 2026 Gabriel Silva
+#
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
 # Foundation, either version 3 of the License, or (at your option) any later
-# version. See LICENSE in this directory.
+# version. See LICENSES/GPL-3.0-or-later.txt.
 #
-# It runs inside Blender as a separate process:
+# Diorama command line, executed inside Blender as a separate process:
 #   blender -b --factory-startup --offline-mode -noaudio --python-exit-code 1 \
-#     --python diorama.py -- --spec shot.json --out <dir> --start 0 --end 59 \
+#     --python run.py -- --spec shot.json --out <dir> --start 0 --end 59 \
 #     --scale 100 --samples 32 --motion-blur 1
-#   blender -b ... --python diorama.py -- --probe <dir>
-#   blender -b ... --python diorama.py -- --thumbnail job.json --out <dir>
+#   blender -b ... --python run.py -- --probe --out <dir>
+#   blender -b ... --python run.py -- --thumbnail job.json --out <dir>
+# With the Blender extension installed: blender -b -c diorama -- <same arguments>.
 # Shots that use library assets also get --assets <resolved.json>: asset id ->
-# kind, SHA-256 and absolute file paths, written by QVid after re-hashing.
-# It reads only a declarative shot specification (validated by QVid with Zod)
-# and never executes code from the specification.
+# kind, SHA-256 and absolute file paths, written by the caller after hashing.
+# The shot specification is data (spec/shot.schema.json); nothing in it is
+# ever executed.
 
 import argparse
 import json
-import math
 import os
-import sys
 import time
 
 import bpy
 from mathutils import Vector
 
-# Never write __pycache__ next to the shipped source (read-only when installed).
-sys.dont_write_bytecode = True
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
-from diorama_components import (  # noqa: E402
+from . import __version__
+from .core import SpecError, load_shot
+from .components import (
     appliance,
     circuit_breaker,
     electrical_panel,
-    faceted_character,
     kitchen_corner,
     library,
     look,
     thumbnail,
 )
 
-INTERPRETER_VERSION = "0.3.1"
+INTERPRETER_VERSION = __version__
 SUPPORTED_BLENDER = (5, 2)
 FORMATS = {"vertical": (1080, 1920), "horizontal": (1920, 1080)}
 
 
+class DioramaError(Exception):
+    """A failure with a stable, documented code (see spec/README.md)."""
+
+    def __init__(self, code, detail=""):
+        super().__init__(code)
+        self.code = code
+        self.detail = detail
+
+
 def fail(code, detail=""):
-    print(f"DIORAMA_ERROR {code} {detail}".strip(), flush=True)
-    sys.exit(3)
+    raise DioramaError(code, detail)
 
 
-def arguments():
-    argv = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else []
+def checked(spec):
+    """Validated, normalized shot (every default applied) or a DioramaError."""
+    try:
+        return load_shot(spec)
+    except SpecError as error:
+        path, message = error.issues[0]
+        fail(error.code, f"{'/'.join(map(str, path))}: {message}".strip(": "))
+
+
+def arguments(argv):
     parser = argparse.ArgumentParser(prog="diorama")
     parser.add_argument("--spec")
     parser.add_argument("--out", required=True)
@@ -66,6 +77,7 @@ def arguments():
     parser.add_argument("--probe", action="store_true")
     parser.add_argument("--assets")
     parser.add_argument("--thumbnail")
+    parser.add_argument("--version", action="version", version=f"diorama3d {__version__}")
     return parser.parse_args(argv)
 
 
@@ -108,8 +120,6 @@ class Shot:
 
     def anchor(self, ref, frame):
         entity = self.entities[ref["entity"]]
-        if isinstance(entity, faceted_character.FacetedCharacter):
-            return entity.anchor_position(ref["anchor"], frame)
         bpy.context.scene.frame_set(frame + 1)
         return entity.anchor(ref["anchor"]).matrix_world.translation.copy()
 
@@ -145,8 +155,6 @@ class Shot:
             elif entity["component"] == "circuit-breaker@1":
                 self.entities[entity["id"]] = circuit_breaker.CircuitBreaker(entity, brand)
                 focus_point = tuple(entity["position"])
-            elif entity["component"] == "faceted-character@1":
-                self.entities[entity["id"]] = faceted_character.FacetedCharacter(entity)
             elif entity["component"] == "asset@1":
                 item = resolved_asset(self.assets, entity["params"], "model")
                 self.entities[entity["id"]] = library.AssetInstance(entity, item)
@@ -179,31 +187,9 @@ class Shot:
                 self.entities[event["target"]].section(event, brand)
             elif event["action"] in ("explode", "assemble"):
                 self.entities[event["target"]].explode(event, event["action"] == "assemble")
-        # 2) body motion; hand targets are evaluated on the already-animated world
-        for _, event in events:
-            actor = self.entities.get(event.get("actor"))
-            if event["action"] == "hand":
-                target = event["target"]
-                position = None if target == "rest" else self.anchor(target, event["frame"])
-                actor.hand(event["hand"], event["frame"], position)
-            elif event["action"] == "lean":
-                actor.lean(event["frame"], event["degrees"])
-            elif event["action"] == "blink":
-                actor.blink(event["frame"])
-            elif event["action"] == "brows":
-                actor.brows_to(event["frame"], event["raise"])
-        # 3) camera (focus may follow anchors), then gaze (may look at the camera)
+        # 2) camera last: its focus may follow anchors of the animated world
         if not studio:
             self.camera(scene)
-        for _, event in events:
-            if event["action"] == "look":
-                target = event["target"]
-                if target == "camera":
-                    scene.frame_set(event["frame"] + 1)
-                    position = scene.camera.matrix_world.translation.copy()
-                else:
-                    position = self.anchor(target, event["frame"])
-                self.entities[event["actor"]].look(event["frame"], position)
         for action in bpy.data.actions:
             for fcurve in getattr(action, "fcurves", []):
                 for point in fcurve.keyframe_points:
@@ -274,9 +260,7 @@ def render_thumbnail(args):
         bpy.ops.wm.read_factory_settings(use_empty=True)
         thumbnail.build_asset(job)
     elif job["mode"] == "component":
-        spec = job["spec"]
-        if spec.get("schema") != "qvid.diorama.shot/0":
-            fail("dioramaUnsupportedSpec", str(spec.get("schema")))
+        spec = checked(job["spec"])
         Shot(spec).build(studio=job["studio"])
         scene_frame = spec["durationFrames"]
         if job["studio"]:
@@ -290,8 +274,7 @@ def render_thumbnail(args):
     print(f"DIORAMA_THUMBNAIL_OK interpreter={INTERPRETER_VERSION}", flush=True)
 
 
-def main():
-    args = arguments()
+def run(args):
     check_blender()
     os.makedirs(args.out, exist_ok=True)
     if args.probe:
@@ -303,9 +286,7 @@ def main():
     if not args.spec:
         fail("dioramaSpecMissing")
     with open(args.spec, encoding="utf-8") as handle:
-        spec = json.load(handle)
-    if spec.get("schema") != "qvid.diorama.shot/0":
-        fail("dioramaUnsupportedSpec", str(spec.get("schema")))
+        spec = checked(json.load(handle))
     assets = {}
     if args.assets:
         with open(args.assets, encoding="utf-8") as handle:
@@ -317,10 +298,19 @@ def main():
     print("DIORAMA_DONE", flush=True)
 
 
-try:
-    main()
-except RuntimeError as error:
-    # Component errors carry a stable code (e.g. dioramaAssetExternalFiles).
-    if str(error).startswith("diorama"):
-        fail(str(error))
-    raise
+
+def main(argv):
+    """Runs one command; returns the process exit code (0 ok, 3 known failure)."""
+    args = arguments(argv)
+    try:
+        run(args)
+    except DioramaError as error:
+        print(f"DIORAMA_ERROR {error.code} {error.detail}".strip(), flush=True)
+        return 3
+    except RuntimeError as error:
+        # Component errors carry a stable code (e.g. dioramaAssetExternalFiles).
+        if str(error).startswith("diorama"):
+            print(f"DIORAMA_ERROR {error}", flush=True)
+            return 3
+        raise
+    return 0

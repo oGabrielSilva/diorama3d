@@ -1,0 +1,31 @@
+# Tooling configuration. The package is not published to PyPI yet: Blender
+# loads it from run.py or as an extension (diorama3d/blender_manifest.toml).
+[project]
+name = "diorama3d"
+version = "0.1.0"
+description = "Declarative, deterministic explainer shots for Blender"
+readme = "README.md"
+license = "GPL-3.0-or-later AND Apache-2.0"
+license-files = ["LICENSES/*.txt"]
+authors = [{ name = "Gabriel Silva" }]
+# The core is pure standard library. Blender 5.2 bundles CPython 3.13.
+# Use the latest security release of your Python series (see SECURITY.md).
+requires-python = ">=3.11"
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Multimedia :: Graphics :: 3D Rendering",
+]
+
+[project.urls]
+Source = "https://github.com/oGabrielSilva/diorama3d"
+Changelog = "https://github.com/oGabrielSilva/diorama3d/blob/main/CHANGELOG.md"
+
+[tool.ruff]
+line-length = 150
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+# run.py must put the package on sys.path before importing it.
+per-file-ignores = { "run.py" = ["E402"] }
