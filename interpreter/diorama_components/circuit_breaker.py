@@ -204,7 +204,8 @@ class CircuitBreaker:
             box(f"{n}.terminal.{side}.clamp", mm(10.5, 4, 1.2), mm(0, -1, 35 * sign - 3.6 * sign), m["steel"], 0.0, parent)
             cylinder(f"{n}.terminal.{side}.core", 1.0 * S, 10.5 * S, mm(0, 0, 41.2 * sign), "z", m["copper"], parent, 8)
             points = [mm(0, 0, 46.5 * sign), mm(0, 0, 60 * sign), mm(0, -2, 95 * sign), mm(0, -6, 150 * sign)]
-            wire(f"{n}.wire.{side}", points, insulation, 1.9 * S, parent)
+            lead = wire(f"{n}.wire.{side}", points, insulation, 1.9 * S, parent)
+            lead["diorama_frame_ignore"] = True  # peripheral: thumbnails frame the breaker
             screw = gr[f"screw-{side}"]
             z = 35 * sign
             cylinder(f"{n}.screw.{side}.head", 3.3 * S, 2.8 * S, mm(0, -11, z), "y", m["steel"], screw, 14, 0.3 * S)

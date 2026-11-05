@@ -43,7 +43,7 @@ from diorama_components import (  # noqa: E402
     thumbnail,
 )
 
-INTERPRETER_VERSION = "0.3.0"
+INTERPRETER_VERSION = "0.3.1"
 SUPPORTED_BLENDER = (5, 2)
 FORMATS = {"vertical": (1080, 1920), "horizontal": (1920, 1080)}
 

@@ -132,7 +132,7 @@ def world_bounds(objects):
     low = Vector((math.inf,) * 3)
     high = Vector((-math.inf,) * 3)
     for obj in objects:
-        if obj.type not in BOUNDED_TYPES or obj.hide_render:
+        if obj.type not in BOUNDED_TYPES or obj.hide_render or obj.get("diorama_frame_ignore"):
             continue
         evaluated = obj.evaluated_get(depsgraph)
         matrix = evaluated.matrix_world

@@ -72,7 +72,8 @@ class ElectricalPanel:
         box(f"{self.id}.frame.right", (0.03, 0.012, PH + 0.03), (PW / 2, lip, 0), m["shell"], 0.008, r, 2)
         for i, z in enumerate(ROWS):
             box(f"{self.id}.rail.{i}", (PW - 0.06, 0.008, 0.035), (0, PD / 2 - 0.02, z), m["rail"], 0.002, r)
-        box(f"{self.id}.conduit", (0.05, 0.05, 0.8), (-0.08, PD / 2 - 0.03, PH / 2 + 0.4), m["conduit"], 0.01, r)
+        conduit = box(f"{self.id}.conduit", (0.05, 0.05, 0.8), (-0.08, PD / 2 - 0.03, PH / 2 + 0.4), m["conduit"], 0.01, r)
+        conduit["diorama_frame_ignore"] = True  # peripheral: thumbnails frame the panel
 
     def _breaker(self, name, x, z, modules, mat, group, lit=True):
         m, r = self.mats, self.root
