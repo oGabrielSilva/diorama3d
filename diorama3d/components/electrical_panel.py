@@ -11,6 +11,7 @@ from mathutils import Vector
 from .common import box, empty, key, material, srgb, wire
 
 PW, PH, PD = 0.40, 0.52, 0.10
+WARNING = srgb("#FF6B3D")  # emission of a tripped circuit's status label
 MODULE = 0.0178 * 1.6  # DIN module, stylized x1.6 so it reads on a phone
 ROWS = (0.11, -0.10)
 DEPTH = 0.07
@@ -163,13 +164,26 @@ class ElectricalPanel:
         groups = ["main", "protections", "circuits"] if event["controls"] == "all" else [event["controls"]]
         frame = event["frame"]
         for group in groups:
-            for item in self.groups[group]:
+            items = self.groups[group]
+            if group == "circuits" and event.get("circuit"):
+                # Re-arm a single circuit: the other levers stay where they are.
+                items = [items[event["circuit"] - 1]]
+            for item in items:
                 for pivot in item["levers"]:
                     key(pivot, "rotation_euler", frame, (OFF, 0, 0))
                     key(pivot, "rotation_euler", frame + 3, (ON, 0, 0))
                     key(pivot, "rotation_euler", frame + 5, (SETTLE, 0, 0))
                 if item["label"] is not None:
-                    socket = item["label"].node_tree.nodes["Principled BSDF"].inputs["Emission Strength"]
+                    principled = item["label"].node_tree.nodes["Principled BSDF"]
+                    if item.get("tripped"):
+                        # The warning color of a trip goes back to the brand color on re-arm.
+                        color = principled.inputs["Emission Color"]
+                        color.default_value = (*WARNING, 1)
+                        color.keyframe_insert("default_value", frame=frame + 3)
+                        color.default_value = (*self.brand, 1)
+                        color.keyframe_insert("default_value", frame=frame + 4)
+                        item["tripped"] = False
+                    socket = principled.inputs["Emission Strength"]
                     for f, value in ((frame + 3, 0.0), (frame + 6, 6.0), (frame + 13, 2.5)):
                         socket.default_value = value
                         socket.keyframe_insert("default_value", frame=f + 1)
@@ -218,8 +232,9 @@ class ElectricalPanel:
             principled = label.node_tree.nodes["Principled BSDF"]
             color, strength = principled.inputs["Emission Color"], principled.inputs["Emission Strength"]
             color.keyframe_insert("default_value", frame=frame + 1)
-            color.default_value = (*srgb("#FF6B3D"), 1)
+            color.default_value = (*WARNING, 1)
             color.keyframe_insert("default_value", frame=frame + 2)
+            item["tripped"] = True
             for f, value in ((frame, 2.5), (frame + 2, 8.0), (frame + 12, 4.0)):
                 strength.default_value = value
                 strength.keyframe_insert("default_value", frame=f + 1)

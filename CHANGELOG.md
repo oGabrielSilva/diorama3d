@@ -7,6 +7,18 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.1] — not yet released
+
+### Added
+
+- `switch-on` on an `electrical-panel@1` accepts `circuit` (with `controls: "circuits"`)
+  to re-arm a single circuit; the other levers stay still.
+
+### Fixed
+
+- Re-arming a tripped circuit returns its status label to the brand color
+  (it stayed in the warning color). Pixels change: version bumped.
+
 ## [0.1.0] — not yet released
 
 First public version, extracted from QVid Studio with its history.

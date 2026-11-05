@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "diorama3d"
-version = "0.1.0"
+version = "0.1.1"
 name = "Diorama"
 tagline = "Declarative, deterministic explainer shots from JSON"
 maintainer = "Gabriel Silva"

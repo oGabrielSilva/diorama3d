@@ -9,5 +9,6 @@
   "explode-on-panel": "dioramaTargetMustBeBreaker",
   "panel-flow-without-circuit": "dioramaEventParamRequired",
   "camera-keys-out-of-order": "dioramaCameraKeysOrder",
+  "rearm-circuit-with-main": "dioramaEventParamNotSupported",
   "unknown-anchor": "dioramaUnknownAnchor"
 }

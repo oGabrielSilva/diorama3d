@@ -46,6 +46,7 @@ its code and the path of the field.
 | `dioramaEventParamRequired`          | On a panel, `flow` and `trip` need `circuit`, and `switch-on` needs `controls`.                      |
 | `dioramaEventParamNotSupported`      | `load` (flow) and `cause` (trip) only apply to a breaker; `circuit`/`controls` only to a panel.      |
 | `dioramaUnknownCircuit`              | `circuit` ≤ the panel's `circuits`.                                                                  |
+| `dioramaEventParamNotSupported`      | `circuit` on `switch-on` only on a panel, with `controls: "circuits"` (re-arms that circuit alone). |
 | `dioramaHighlightCircuit`            | `highlight` has `circuit` exactly when `controls` is `circuit`.                                      |
 | `dioramaUnknownEntity`               | An anchor reference names an existing entity.                                                        |
 | `dioramaUnknownAnchor`               | The anchor exists on that component (see the table in the main README).                              |

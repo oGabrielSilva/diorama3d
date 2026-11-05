@@ -100,6 +100,10 @@ def check(spec):
                 event.get("circuit")
             ):
                 issue(path + ("circuit",), "dioramaHighlightCircuit")
+        if event["action"] == "switch-on" and "circuit" in event:
+            target = entities.get(event["target"])
+            if not target or target["component"] != "electrical-panel@1" or event.get("controls") != "circuits":
+                issue(path + ("circuit",), "dioramaEventParamNotSupported")
         if isinstance(event.get("target"), dict):
             check_anchor(event["target"], path + ("target",))
 

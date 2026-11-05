@@ -11,7 +11,7 @@ Two ways to run it, both inside Blender:
 
 # Keep equal to `version` in blender_manifest.toml. Any change that alters
 # rendered pixels must bump it: callers key their render caches on it.
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 _commands = []
 

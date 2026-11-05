@@ -2,7 +2,7 @@
 # loads it from run.py or as an extension (diorama3d/blender_manifest.toml).
 [project]
 name = "diorama3d"
-version = "0.1.0"
+version = "0.1.1"
 description = "Declarative, deterministic explainer shots for Blender"
 readme = "README.md"
 license = "GPL-3.0-or-later AND Apache-2.0"

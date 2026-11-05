@@ -783,6 +783,11 @@
                   "all"
                 ]
               },
+              "circuit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 8
+              },
               "staggerFrames": {
                 "default": 5,
                 "type": "integer",
