@@ -127,7 +127,7 @@ class ElectricalPanel:
         runs = [("main", main_x - 0.008, ROWS[0], 0), ("main", main_x + 0.008, ROWS[0], 2)]
         for i, item in enumerate(self.groups["circuits"]):
             runs.append((i + 1, item["x"], ROWS[1], i % 2))
-        for i, (key, tx, row, color) in enumerate(runs):
+        for i, (circuit, tx, row, color) in enumerate(runs):
             points = [
                 (-0.09 + 0.008 * (i % 4), PD / 2 - 0.03, PH / 2 + 0.05),
                 (-0.09 + 0.01 * i, PD / 2 - 0.035, PH / 2 - 0.05),
@@ -135,7 +135,7 @@ class ElectricalPanel:
                 (tx, PD / 2 - 0.02 - DEPTH / 2, row + 0.045),
             ]
             wire(f"{self.id}.wire.{i}", points, self.wires[color], 0.0042, self.root)
-            self.wire_paths.setdefault(key, []).append(points)
+            self.wire_paths.setdefault(circuit, []).append(points)
 
     def _door(self):
         m = self.mats
