@@ -47,7 +47,7 @@ jobs:
           (cd dist && sha256sum "$name.tar.gz" > "$name.tar.gz.sha256")
           cat "dist/$name.tar.gz.sha256"
           stat -c '%s bytes' "dist/$name.tar.gz"
-      - uses: actions/attest-build-provenance@v2
+      - uses: actions/attest-build-provenance@v4
         with:
           subject-path: dist/diorama3d-*.tar.gz
       - name: Release notes
