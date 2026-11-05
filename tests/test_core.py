@@ -12,6 +12,8 @@ from diorama3d.core import SpecError, load_shot, shot_schema
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 CONFORMANCE = ROOT / "spec" / "conformance"
+# Split so REUSE does not read this line as the license of this file.
+SPDX_MARKER = "SPDX-" + "License-Identifier:"
 
 
 def read(path):
@@ -92,7 +94,7 @@ class PackagingTest(unittest.TestCase):
             if ".git" in path.parts:
                 continue
             with self.subTest(path=str(path.relative_to(ROOT))):
-                self.assertIn("SPDX-License-Identifier:", path.read_text(encoding="utf-8").splitlines()[0])
+                self.assertIn(SPDX_MARKER, path.read_text(encoding="utf-8").splitlines()[0])
 
 
 if __name__ == "__main__":
