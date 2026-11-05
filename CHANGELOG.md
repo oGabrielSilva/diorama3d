@@ -7,7 +7,10 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
-## [0.1.1] — not yet released
+## [0.1.1] — 2026-11-05
+
+First published release. Apps download `diorama3d-0.1.1.tar.gz` from the
+GitHub release (SHA-256 in the release notes).
 
 ### Added
 
@@ -19,9 +22,10 @@ All notable changes to this project are documented here. The format follows
 - Re-arming a tripped circuit returns its status label to the brand color
   (it stayed in the warning color). Pixels change: version bumped.
 
-## [0.1.0] — not yet released
+## [0.1.0] — not released separately
 
-First public version, extracted from QVid Studio with its history.
+First public version, extracted from QVid Studio with its history. It ships as
+part of 0.1.1.
 
 ### Added
 

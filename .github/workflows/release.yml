@@ -1,0 +1,72 @@
+name: Release
+
+# A tag vX.Y.Z publishes the script-mode archive that apps download (run.py,
+# the diorama3d package and the licenses), with its SHA-256 in the release notes
+# and a build provenance attestation.
+
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Publish ${{ github.ref_name }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          check-latest: true
+      - name: Tests
+        run: python -m unittest discover -s tests
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+      - name: Versions match the tag
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          grep -qx "__version__ = \"$version\"" diorama3d/__init__.py
+          grep -qx "version = \"$version\"" diorama3d/blender_manifest.toml
+          grep -qx "version = \"$version\"" pyproject.toml
+          grep -q "^## \[$version\]" CHANGELOG.md
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+      - name: Build the archive
+        run: |
+          mkdir dist
+          name="diorama3d-$VERSION"
+          git archive --format=tar --prefix="$name/" HEAD \
+            run.py diorama3d LICENSES LICENSE.md README.md CHANGELOG.md \
+            | gzip -n -9 > "dist/$name.tar.gz"
+          (cd dist && sha256sum "$name.tar.gz" > "$name.tar.gz.sha256")
+          cat "dist/$name.tar.gz.sha256"
+          stat -c '%s bytes' "dist/$name.tar.gz"
+      - uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: dist/diorama3d-*.tar.gz
+      - name: Release notes
+        run: |
+          name="diorama3d-$VERSION"
+          awk -v v="$VERSION" '$0 ~ "^## \\[" v "\\]" {on=1; next} /^## \[/ {on=0} on' CHANGELOG.md > notes.md
+          {
+            echo
+            echo "### Download"
+            echo
+            echo "\`$name.tar.gz\` holds \`run.py\`, the \`diorama3d\` package and the licenses (script mode, see README)."
+            echo
+            echo "- Size: $(stat -c '%s' "dist/$name.tar.gz") bytes"
+            echo "- SHA-256: \`$(cut -d' ' -f1 "dist/$name.tar.gz.sha256")\`"
+            echo "- Provenance: \`gh attestation verify $name.tar.gz -R ${{ github.repository }}\`"
+          } >> notes.md
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --title "Diorama $VERSION" --notes-file notes.md --verify-tag

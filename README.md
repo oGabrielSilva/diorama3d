@@ -86,13 +86,16 @@ Diorama runs as a separate Blender process and talks through files, arguments
 and one line per event on stdout:
 
 ```text
-DIORAMA_BUILD seconds=0.22 interpreter=0.1.0
+DIORAMA_BUILD seconds=0.22 interpreter=0.1.1
 DIORAMA_FRAME 42
 DIORAMA_DONE
 DIORAMA_ERROR dioramaUnknownAnchor camera/keys/0/focus
 ```
 
-Exit code `0` means success and `3` a known failure with a stable code. Validate
+Exit code `0` means success and `3` a known failure with a stable code.
+Each [release](https://github.com/oGabrielSilva/diorama3d/releases) has a
+`diorama3d-<version>.tar.gz` with `run.py`, the package and the licenses; pin
+its SHA-256 (in the release notes) and run `run.py` from the unpacked folder. Validate
 shots before launching Blender with the JSON Schema in any language, or with the
 pure-Python core:
 
